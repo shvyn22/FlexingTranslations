@@ -11,8 +11,8 @@ import shvyn22.translationapplication.util.fromDTOToModel
 class RepositoryImpl(
     private val api: ApiInterface,
     private val translationDao: TranslationDao
-): Repository {
-    override fun getHistoryItem(): Flow<TranslationModel> =
+) : Repository {
+    override fun getHistoryItems(): Flow<List<TranslationModel>> =
         translationDao.getAll()
 
     override fun translate(
@@ -23,16 +23,10 @@ class RepositoryImpl(
         try {
             val response = api.translate(translateTo, text)
             val item = fromDTOToModel(response.translation)
+            translationDao.insert(item)
             emit(Resource.Success(item))
         } catch (e: Exception) {
             emit(Resource.Error<TranslationModel>(e.localizedMessage ?: ""))
         }
     }
-
-    override fun insertToHistory(item: TranslationModel) {
-        deleteFromHistory(item)
-        translationDao.insert(item)
-    }
-
-    override fun deleteFromHistory(item: TranslationModel) = translationDao.delete(item)
 }

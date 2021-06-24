@@ -6,11 +6,7 @@ import shvyn22.translationapplication.util.Resource
 
 interface Repository {
 
-    fun getHistoryItem(): Flow<TranslationModel>
+    fun getHistoryItems(): Flow<List<TranslationModel>>
 
     fun translate(translateTo: String, text: String): Flow<Resource<TranslationModel>>
-
-    fun insertToHistory(item: TranslationModel)
-
-    fun deleteFromHistory(item: TranslationModel)
 }

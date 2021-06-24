@@ -102,4 +102,5 @@ dependencies {
     implementation "androidx.activity:activity-compose:$activityComposeVersion"
     implementation "androidx.constraintlayout:constraintlayout-compose:$constraintComposeVersion"
     implementation "androidx.hilt:hilt-navigation-compose:$hiltNavigationCompose"
+    implementation "com.google.accompanist:accompanist-systemuicontroller:$accompanistVersion"
 }

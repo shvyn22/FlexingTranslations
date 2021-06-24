@@ -1,3 +1,43 @@
 <resources>
     <string name="app_name">TranslationApplication</string>
+
+    <string name="hint_text">Input your text</string>
+    <string name="text_translate">Translate</string>
+    <string name="text_history">History</string>
+    <string name="text_from">From: %s</string>
+    <string name="text_to">To: %s</string>
+
+    <string-array name="translate_to">
+        <item>yoda</item>
+        <item>sith</item>
+        <item>mandalorian</item>
+
+        <item>klingon</item>
+        <item>dothraki</item>
+        <item>valyrian</item>
+
+        <item>dovahzul</item>
+        <item>thuum</item>
+        <item>orcish</item>
+
+        <item>ebonics</item>
+        <item>redneck</item>
+        <item>asian-accent</item>
+        <item>russian-accent</item>
+
+        <item>numbers</item>
+        <item>roman-numerals</item>
+
+        <item>morse</item>
+        <item>us2uk</item>
+        <item>uk2us</item>
+        <item>article_rewrite</item>
+
+        <item>pirate</item>
+        <item>minion</item>
+
+        <item>pig-latin</item>
+        <item>oldenglish</item>
+        <item>shakespeare</item>
+    </string-array>
 </resources>

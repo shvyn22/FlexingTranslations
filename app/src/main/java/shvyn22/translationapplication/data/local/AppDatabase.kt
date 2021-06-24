@@ -7,7 +7,7 @@ import shvyn22.translationapplication.data.local.model.TranslationModel
 
 @Database(
     entities = [TranslationModel::class],
-    version = 1
+    version = 2
 )
 abstract class AppDatabase : RoomDatabase() {
 
