@@ -40,4 +40,12 @@ class MainViewModel @Inject constructor(
     fun onToggleMode(newValue: Boolean) = viewModelScope.launch {
         preferences.editNightMode(newValue)
     }
+    
+    fun onHistoryItemClick(item: TranslationModel) = viewModelScope.launch {
+        _currentTranslation.value = Resource.Success(item)
+    }
+
+    fun removeFromHistory(item: TranslationModel) = viewModelScope.launch {
+        repository.delete(item)
+    }
 }

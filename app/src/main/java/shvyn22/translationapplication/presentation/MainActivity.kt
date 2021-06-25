@@ -4,6 +4,7 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import androidx.activity.compose.setContent
 import androidx.activity.viewModels
+import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.material.MaterialTheme
 import androidx.compose.runtime.SideEffect
 import androidx.compose.runtime.collectAsState
@@ -16,6 +17,7 @@ class MainActivity : AppCompatActivity() {
 
     private val viewModel: MainViewModel by viewModels()
 
+    @ExperimentalFoundationApi
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -38,7 +40,9 @@ class MainActivity : AppCompatActivity() {
                     onToggleMode = viewModel::onToggleMode,
                     translate = viewModel::translate,
                     currTranslation = viewModel.currentTranslation,
-                    historyItems = viewModel.historyItems
+                    historyItems = viewModel.historyItems,
+                    onHistoryItemClick = viewModel::onHistoryItemClick,
+                    removeFromHistory = viewModel::removeFromHistory
                 )
             }
         }

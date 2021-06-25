@@ -12,6 +12,7 @@ class RepositoryImpl(
     private val api: ApiInterface,
     private val translationDao: TranslationDao
 ) : Repository {
+
     override fun getHistoryItems(): Flow<List<TranslationModel>> =
         translationDao.getAll()
 
@@ -22,11 +23,15 @@ class RepositoryImpl(
         emit(Resource.Loading<TranslationModel>())
         try {
             val response = api.translate(translateTo, text)
-            val item = fromDTOToModel(response.translation)
-            translationDao.insert(item)
+            val item = fromDTOToModel(response.response)
+            insert(item)
             emit(Resource.Success(item))
         } catch (e: Exception) {
             emit(Resource.Error<TranslationModel>(e.localizedMessage ?: ""))
         }
     }
+
+    override suspend fun insert(item: TranslationModel) = translationDao.insert(item)
+
+    override suspend fun delete(item: TranslationModel) = translationDao.delete(item)
 }

@@ -1,5 +1,4 @@
 <resources>
-    <style name="Theme.TranslationApplication" parent="Theme.MaterialComponents.DayNight.NoActionBar">
-        <item name="android:statusBarColor">@color/beige_200</item>
-    </style>
+    <style name="Theme.TranslationApplication"
+        parent="Theme.MaterialComponents.DayNight.NoActionBar"/>
 </resources>

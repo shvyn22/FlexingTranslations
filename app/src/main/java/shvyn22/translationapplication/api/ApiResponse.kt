@@ -5,5 +5,5 @@ import shvyn22.translationapplication.data.remote.TranslationDTO
 
 data class ApiResponse(
     @SerializedName("contents")
-    val translation: TranslationDTO
+    val response: TranslationDTO
 )

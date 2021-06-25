@@ -1,9 +1,6 @@
 package shvyn22.translationapplication.data.local.dao
 
-import androidx.room.Dao
-import androidx.room.Insert
-import androidx.room.OnConflictStrategy
-import androidx.room.Query
+import androidx.room.*
 import kotlinx.coroutines.flow.Flow
 import shvyn22.translationapplication.data.local.model.TranslationModel
 
@@ -14,5 +11,8 @@ interface TranslationDao {
     fun getAll(): Flow<List<TranslationModel>>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    fun insert(item: TranslationModel)
+    suspend fun insert(item: TranslationModel)
+
+    @Delete
+    suspend fun delete(item: TranslationModel)
 }

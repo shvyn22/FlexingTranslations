@@ -1,5 +1,6 @@
 package shvyn22.translationapplication.presentation
 
+import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
@@ -11,6 +12,7 @@ import androidx.compose.material.icons.filled.ArrowDropDown
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.stringArrayResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
@@ -19,20 +21,29 @@ import androidx.constraintlayout.compose.ConstraintLayout
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.launch
 import shvyn22.translationapplication.R
 import shvyn22.translationapplication.data.local.model.TranslationModel
 import shvyn22.translationapplication.presentation.ui.components.HistoryItem
 import shvyn22.translationapplication.presentation.ui.components.TranslationAppBar
 import shvyn22.translationapplication.util.Resource
 
+@ExperimentalFoundationApi
 @Composable
 fun MainScreen(
     isNightMode: Boolean,
     onToggleMode: (Boolean) -> Job,
     translate: (String, String) -> Job,
     currTranslation: StateFlow<Resource<TranslationModel>>,
-    historyItems: Flow<List<TranslationModel>>
+    historyItems: Flow<List<TranslationModel>>,
+    onHistoryItemClick: (TranslationModel) -> Unit,
+    removeFromHistory: (TranslationModel) -> Unit
 ) {
+    val coroutineScope = rememberCoroutineScope()
+    val scaffoldState = rememberScaffoldState()
+
+    val focusManager = LocalFocusManager.current
+
     var expandedState by remember { mutableStateOf(false) }
 
     val items = stringArrayResource(id = R.array.translate_to)
@@ -45,6 +56,7 @@ fun MainScreen(
     val historyItemsState = historyItems.collectAsState(initial = listOf())
 
     Scaffold(
+        scaffoldState = scaffoldState,
         topBar = {
             TranslationAppBar(
                 isNightMode = isNightMode,
@@ -52,18 +64,34 @@ fun MainScreen(
             )
         }
     ) {
-        Box {
+        Box(
+            modifier = Modifier.fillMaxSize()
+        ) {
             currTranslationState.value.let { translation ->
-                if (translation is Resource.Loading) CircularProgressIndicator(
-                    modifier = Modifier.align(Alignment.Center)
-                )
-                else if (translation is Resource.Success) translationFieldValue =
-                    translation.data.translation
+                when (translation) {
+                    is Resource.Loading -> CircularProgressIndicator(
+                        modifier = Modifier.align(Alignment.Center)
+                    )
+                    is Resource.Success -> {
+                        translation.data.let {
+                            selectedItemState = it.translateTo
+                            textFieldValue = it.text
+                            translationFieldValue = it.translation
+                        }
+                    }
+                    is Resource.Error -> {
+                        translationFieldValue = ""
+                        coroutineScope.launch {
+                            scaffoldState.snackbarHostState.showSnackbar(translation.error)
+                        }
+                    }
+                    else -> Unit
+                }
             }
 
             ConstraintLayout(
                 modifier = Modifier
-                    .fillMaxWidth()
+                    .fillMaxSize()
                     .padding(16.dp)
             ) {
                 val (
@@ -151,6 +179,7 @@ fun MainScreen(
                 Button(
                     onClick = {
                         translate(selectedItemState, textFieldValue)
+                        focusManager.clearFocus()
                     },
                     modifier = Modifier
                         .fillMaxWidth()
@@ -197,10 +226,16 @@ fun MainScreen(
                             .constrainAs(lazyHistory) {
                                 start.linkTo(parent.start)
                                 bottom.linkTo(parent.bottom)
-                            }
+                            },
+                        horizontalArrangement = Arrangement.Center,
+                        verticalAlignment = Alignment.CenterVertically
                     ) {
-                        items(historyItemsState.value) {
-                            HistoryItem(translationModel = it)
+                        items(historyItemsState.value) { item ->
+                            HistoryItem(
+                                item = item,
+                                onClick = { onHistoryItemClick(item) },
+                                onLongClick = { removeFromHistory(item) }
+                            )
                         }
                     }
                 }
