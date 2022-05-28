@@ -10,39 +10,46 @@ import androidx.compose.runtime.SideEffect
 import androidx.compose.runtime.collectAsState
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
 import dagger.hilt.android.AndroidEntryPoint
-import shvyn22.flexingtranslations.presentation.ui.theme.TranslationAppTheme
+import shvyn22.flexingtranslations.presentation.main.MainScreen
+import shvyn22.flexingtranslations.presentation.main.MainViewModel
+import shvyn22.flexingtranslations.presentation.ui.theme.AppTheme
 
 @AndroidEntryPoint
 class MainActivity : AppCompatActivity() {
 
     private val viewModel: MainViewModel by viewModels()
 
-    @ExperimentalFoundationApi
+    @OptIn(ExperimentalFoundationApi::class)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
         setContent {
-            val nightMode = viewModel.nightMode.collectAsState(initial = false)
             val systemUiController = rememberSystemUiController()
 
-            TranslationAppTheme(isNightMode = nightMode.value) {
+            val isDarkTheme = viewModel.isDarkTheme.collectAsState()
+
+            AppTheme(
+                isDarkTheme = isDarkTheme.value
+            ) {
                 val statusBarColor = MaterialTheme.colors.primaryVariant
 
                 SideEffect {
                     systemUiController.setStatusBarColor(
                         color = statusBarColor,
-                        darkIcons = !nightMode.value
+                        darkIcons = !isDarkTheme.value
                     )
                 }
 
+                val currTranslation = viewModel.currTranslation.collectAsState()
+                val historyItems = viewModel.historyItems.collectAsState()
+
                 MainScreen(
-                    isNightMode = nightMode.value,
-                    onToggleMode = viewModel::onToggleMode,
-                    translate = viewModel::translate,
-                    currTranslation = viewModel.currentTranslation,
-                    historyItems = viewModel.historyItems,
-                    onHistoryItemClick = viewModel::onHistoryItemClick,
-                    removeFromHistory = viewModel::removeFromHistory
+                    currTranslation = currTranslation.value,
+                    historyItems = historyItems.value,
+                    onToggleTheme = viewModel::editThemePreferences,
+                    onTranslate = viewModel::translate,
+                    onSetHistoryTranslation = viewModel::setHistoryTranslation,
+                    onDeleteHistoryTranslation = viewModel::deleteHistoryTranslation
                 )
             }
         }

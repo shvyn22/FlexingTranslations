@@ -2,14 +2,14 @@ package shvyn22.flexingtranslations.repository
 
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
-import shvyn22.flexingtranslations.api.ApiInterface
 import shvyn22.flexingtranslations.data.local.dao.TranslationDao
 import shvyn22.flexingtranslations.data.local.model.TranslationModel
+import shvyn22.flexingtranslations.data.remote.api.ApiService
+import shvyn22.flexingtranslations.data.util.fromDTOToModel
 import shvyn22.flexingtranslations.util.Resource
-import shvyn22.flexingtranslations.util.fromDTOToModel
 
 class RepositoryImpl(
-    private val api: ApiInterface,
+    private val api: ApiService,
     private val translationDao: TranslationDao
 ) : Repository {
 
@@ -21,17 +21,19 @@ class RepositoryImpl(
         try {
             val response = api.translate(translateTo, text)
             val item = fromDTOToModel(response.response)
-            insert(item)
+            insertHistoryTranslation(item)
             emit(Resource.Success(item))
         } catch (e: Exception) {
             emit(Resource.Error(e.localizedMessage ?: ""))
         }
     }
 
-    override fun getHistoryItems(): Flow<List<TranslationModel>> =
-        translationDao.getAll()
+    override fun getHistoryTranslations(): Flow<List<TranslationModel>> =
+        translationDao.getHistoryTranslations()
 
-    override suspend fun insert(item: TranslationModel) = translationDao.insert(item)
+    override suspend fun insertHistoryTranslation(item: TranslationModel) =
+        translationDao.insertHistoryTranslation(item)
 
-    override suspend fun delete(item: TranslationModel) = translationDao.delete(item)
+    override suspend fun deleteHistoryTranslation(item: TranslationModel) =
+        translationDao.deleteHistoryTranslation(item)
 }

@@ -1,4 +1,4 @@
-package shvyn22.flexingtranslations.presentation
+package shvyn22.flexingtranslations.presentation.main
 
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
@@ -18,25 +18,23 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 import shvyn22.flexingtranslations.R
 import shvyn22.flexingtranslations.data.local.model.TranslationModel
+import shvyn22.flexingtranslations.presentation.ui.components.AppBar
 import shvyn22.flexingtranslations.presentation.ui.components.HistoryItem
-import shvyn22.flexingtranslations.presentation.ui.components.TranslationAppBar
 import shvyn22.flexingtranslations.util.Resource
 
 @ExperimentalFoundationApi
 @Composable
 fun MainScreen(
-    isNightMode: Boolean,
-    onToggleMode: (Boolean) -> Unit,
-    translate: (String, String) -> Unit,
-    currTranslation: StateFlow<Resource<TranslationModel>>,
-    historyItems: Flow<List<TranslationModel>>,
-    onHistoryItemClick: (TranslationModel) -> Unit,
-    removeFromHistory: (TranslationModel) -> Unit
+    currTranslation: Resource<TranslationModel>,
+    historyItems: List<TranslationModel>,
+    onToggleTheme: (Boolean) -> Unit,
+    onTranslate: (String, String) -> Unit,
+    onSetHistoryTranslation: (TranslationModel) -> Unit,
+    onDeleteHistoryTranslation: (TranslationModel) -> Unit,
+    modifier: Modifier = Modifier
 ) {
     val coroutineScope = rememberCoroutineScope()
     val scaffoldState = rememberScaffoldState()
@@ -51,22 +49,22 @@ fun MainScreen(
     var textFieldValue by remember { mutableStateOf("") }
     var translationFieldValue by remember { mutableStateOf("") }
 
-    val currTranslationState = currTranslation.collectAsState(initial = Resource.Idle())
-    val historyItemsState = historyItems.collectAsState(initial = listOf())
+    val isDarkTheme = !MaterialTheme.colors.isLight
 
     Scaffold(
         scaffoldState = scaffoldState,
         topBar = {
-            TranslationAppBar(
-                isNightMode = isNightMode,
-                onToggleMode = onToggleMode
+            AppBar(
+                isDarkTheme = isDarkTheme,
+                onToggleTheme = onToggleTheme
             )
         }
     ) {
         Box(
-            modifier = Modifier.fillMaxSize()
+            modifier = modifier
+                .fillMaxSize()
         ) {
-            currTranslationState.value.let { translation ->
+            currTranslation.let { translation ->
                 when (translation) {
                     is Resource.Loading -> CircularProgressIndicator(
                         modifier = Modifier.align(Alignment.Center)
@@ -156,7 +154,6 @@ fun MainScreen(
                     }
                 }
 
-
                 OutlinedTextField(
                     value = textFieldValue,
                     onValueChange = { textFieldValue = it },
@@ -177,7 +174,7 @@ fun MainScreen(
 
                 Button(
                     onClick = {
-                        translate(selectedItem, textFieldValue)
+                        onTranslate(selectedItem, textFieldValue)
                         focusManager.clearFocus()
                     },
                     modifier = Modifier
@@ -207,7 +204,7 @@ fun MainScreen(
                         }
                 )
 
-                if (historyItemsState.value.isNotEmpty()) {
+                if (historyItems.isNotEmpty()) {
                     Text(
                         text = stringResource(id = R.string.text_history),
                         textAlign = TextAlign.Center,
@@ -219,21 +216,22 @@ fun MainScreen(
                                 end.linkTo(parent.end)
                             }
                     )
+
                     LazyRow(
+                        horizontalArrangement = Arrangement.Center,
+                        verticalAlignment = Alignment.CenterVertically,
                         modifier = Modifier
                             .fillMaxWidth()
                             .constrainAs(lazyHistory) {
                                 start.linkTo(parent.start)
                                 bottom.linkTo(parent.bottom)
-                            },
-                        horizontalArrangement = Arrangement.Center,
-                        verticalAlignment = Alignment.CenterVertically
+                            }
                     ) {
-                        items(historyItemsState.value) { item ->
+                        items(historyItems) { item ->
                             HistoryItem(
                                 item = item,
-                                onClick = { onHistoryItemClick(item) },
-                                onLongClick = { removeFromHistory(item) }
+                                onClick = { onSetHistoryTranslation(item) },
+                                onLongClick = { onDeleteHistoryTranslation(item) }
                             )
                         }
                     }

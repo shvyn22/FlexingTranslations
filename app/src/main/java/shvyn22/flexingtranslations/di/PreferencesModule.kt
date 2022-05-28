@@ -9,7 +9,9 @@ import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
-import shvyn22.flexingtranslations.util.PREFERENCES_FILE_NAME
+import shvyn22.flexingtranslations.data.preferences.PreferencesManager
+import shvyn22.flexingtranslations.data.preferences.PreferencesManagerImpl
+import shvyn22.flexingtranslations.util.DATASTORE_FILENAME
 import javax.inject.Singleton
 
 @Module
@@ -21,7 +23,13 @@ object PreferencesModule {
     fun provideDataStore(app: Application): DataStore<Preferences> =
         PreferenceDataStoreFactory.create(
             produceFile = {
-                app.preferencesDataStoreFile(PREFERENCES_FILE_NAME)
+                app.preferencesDataStoreFile(DATASTORE_FILENAME)
             }
         )
+
+    @Singleton
+    @Provides
+    fun providePreferencesManager(
+        dataStore: DataStore<Preferences>
+    ): PreferencesManager = PreferencesManagerImpl(dataStore)
 }

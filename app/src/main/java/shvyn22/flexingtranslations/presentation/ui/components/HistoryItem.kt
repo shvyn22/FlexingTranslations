@@ -33,7 +33,8 @@ fun HistoryItem(
             )
     ) {
         Column(
-            modifier = Modifier.padding(10.dp)
+            modifier = Modifier
+                .padding(10.dp)
         ) {
             Text(
                 text = item.translateTo,

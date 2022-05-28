@@ -4,8 +4,8 @@ This application is based on [Fun translations API](https://funtranslations.com/
 
 ## Screenshots
 <p float="left">
-  <img src="screenshots/screen1.png" width=200/>
-  <img src="screenshots/screen2.png" width=200/> 
+  <img src="assets/screen1.png" width=200/>
+  <img src="assets/screen2.png" width=200/> 
 </p>
 
 ## Tech stack and concepts

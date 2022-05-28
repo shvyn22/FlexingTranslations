@@ -8,9 +8,9 @@ interface Repository {
 
     fun translate(translateTo: String, text: String): Flow<Resource<TranslationModel>>
 
-    fun getHistoryItems(): Flow<List<TranslationModel>>
+    fun getHistoryTranslations(): Flow<List<TranslationModel>>
 
-    suspend fun insert(item: TranslationModel)
+    suspend fun insertHistoryTranslation(item: TranslationModel)
 
-    suspend fun delete(item: TranslationModel)
+    suspend fun deleteHistoryTranslation(item: TranslationModel)
 }

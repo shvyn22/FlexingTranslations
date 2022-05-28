@@ -1,28 +1,10 @@
 package shvyn22.flexingtranslations.data.preferences
 
-import androidx.datastore.core.DataStore
-import androidx.datastore.preferences.core.Preferences
-import androidx.datastore.preferences.core.booleanPreferencesKey
-import androidx.datastore.preferences.core.edit
-import kotlinx.coroutines.flow.map
-import shvyn22.flexingtranslations.data.preferences.PreferencesManager.PreferencesKeys.NIGHT_MODE
-import javax.inject.Inject
-import javax.inject.Singleton
+import kotlinx.coroutines.flow.Flow
 
-@Singleton
-class PreferencesManager @Inject constructor(
-    private val dataStore: DataStore<Preferences>
-) {
+interface PreferencesManager {
 
-    val nightMode = dataStore.data.map {
-        it[NIGHT_MODE] ?: false
-    }
+    val isDarkTheme: Flow<Boolean>
 
-    suspend fun editNightMode(newValue: Boolean) = dataStore.edit {
-        it[NIGHT_MODE] = newValue
-    }
-
-    private object PreferencesKeys {
-        val NIGHT_MODE = booleanPreferencesKey("nightMode")
-    }
+    suspend fun editThemePreferences(newThemeValue: Boolean)
 }

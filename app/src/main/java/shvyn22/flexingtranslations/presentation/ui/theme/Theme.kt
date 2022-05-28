@@ -4,16 +4,16 @@ import androidx.compose.material.MaterialTheme
 import androidx.compose.runtime.Composable
 
 @Composable
-fun TranslationAppTheme(
-    isNightMode: Boolean,
+fun AppTheme(
+    isDarkTheme: Boolean,
     content: @Composable () -> Unit
 ) {
-    val colors = if (isNightMode) DarkColors else LightColors
+    val colors = if (isDarkTheme) DarkColors else LightColors
 
     MaterialTheme(
         colors = colors,
-        shapes = TranslationShapes,
-        typography = TranslationTypography,
+        shapes = AppShapes,
+        typography = AppTypography,
         content = content
     )
 }

@@ -8,13 +8,15 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.DarkMode
 import androidx.compose.material.icons.filled.LightMode
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import shvyn22.flexingtranslations.R
 
 @Composable
-fun TranslationAppBar(
-    isNightMode: Boolean,
-    onToggleMode: (Boolean) -> Unit,
+fun AppBar(
+    isDarkTheme: Boolean,
+    onToggleTheme: (Boolean) -> Unit,
+    modifier: Modifier = Modifier
 ) {
     TopAppBar(
         title = {
@@ -24,14 +26,15 @@ fun TranslationAppBar(
         },
         actions = {
             IconButton(
-                onClick = { onToggleMode(!isNightMode) }
+                onClick = { onToggleTheme(!isDarkTheme) }
             ) {
                 Icon(
-                    imageVector = if (isNightMode) Icons.Filled.LightMode
+                    imageVector = if (isDarkTheme) Icons.Filled.LightMode
                     else Icons.Filled.DarkMode,
                     contentDescription = null
                 )
             }
-        }
+        },
+        modifier = modifier
     )
 }
