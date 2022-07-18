@@ -1,5 +1,5 @@
 # FlexingTranslations
-FlexingTranslations is an Android MVVM Compose sample application created for learning purposes only.\
+FlexingTranslations is an Android Compose sample application created for learning purposes only.\
 This application is based on [Fun translations API](https://funtranslations.com/api/).
 
 ## Screenshots
@@ -20,6 +20,11 @@ This application is based on [Fun translations API](https://funtranslations.com/
 * **[Lifecycle components](https://developer.android.com/jetpack/androidx/releases/lifecycle)**.
   * **ViewModel** for implementing MVVM pattern.
 * **[Hilt](https://dagger.dev/hilt/)** for dependency injection.
+
+## Key features
+#### i.e. what is unique among other samples?
+* **POST** requests with **FormUrlEncoded**
+* Dynamic layout based on user text inputs
 
 ## License
 ```
